@@ -44,3 +44,8 @@ button {
    margin-right: 20px;
 }
 
+select {
+   position: absolute;
+   left: 55%;
+   top: 40px;
+}

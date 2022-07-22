@@ -1,41 +1,54 @@
 "use strict";
 
-const inputTop = document.querySelector('.input__top'),
-      inputBottom = document.querySelector('.input__bottom'),
+const inputForeign = document.querySelector('.input__top'),
+      inputUah = document.querySelector('.input__bottom'),
       clearBtn = document.querySelector('.btn'),
       selectField = document.querySelector('select');
-// const url = 'http://localhost:3000/currency';
-const url = 'https://api.exchangerate.host/latest?base=USD&symbols=USD,EUR,UAH';
 
 clearBtn.addEventListener('click', () => {
-   inputTop.value = '';
-   inputBottom.value = '';
+   inputUah.value = '';
+   inputForeign.value = '';
 });
 
-inputTop.addEventListener('input',() => calc(url, inputBottom, inputTop, '*'));
-inputBottom.addEventListener('input', () => calc(url, inputTop, inputBottom, '/'));
+selectField.addEventListener('click', () => {
+   inputForeign.placeholder = selectField.value;
+   localStorage.setItem('value', selectField.value);
+});
 
-function calc(adress, inputTop, inputBottom, operator) {
-   fetch(adress)
-         .then(data => data.json())
-         .then(res => {
-            if(inputBottom.value === ''){
-               inputTop.value = '';
-            }else{
-               if(operator === '*'){
-                  inputTop.value = Math.floor(+inputBottom.value * res.rates.UAH);
-               }else{
-                  inputTop.value = Math.floor(+inputBottom.value / res.rates.UAH);
-               }
-            }
-   });
+inputForeign.placeholder = localStorage.getItem('value');
+selectField.value = localStorage.getItem('value');
+
+inputForeign.addEventListener('input',(e) => calc(e));
+inputUah.addEventListener('input', (e) => calc(e));
+   
+function calc(e) {
+   let cuurentField = e.target.placeholder;
+   if(cuurentField !== 'UAH'){
+      axios.get(`https://api.exchangerate.host/latest?base=${cuurentField}&symbols=UAH`)
+      .then(res => res)
+      .then(data => {
+         inputUah.value = (inputForeign.value * data.data.rates.UAH).toFixed(2);
+         if(inputForeign.value === ''){
+            inputUah.value = '';
+         }
+      });
+   }else{
+      axios.get(`https://api.exchangerate.host/latest?base=${cuurentField}&symbols=${selectField.value}`)
+      .then(res => res)
+      .then(data => {
+         if(selectField.value === "USD"){
+            inputForeign.value = (inputUah.value * data.data.rates.USD).toFixed(2);
+         }else{
+            inputForeign.value = (inputUah.value * data.data.rates.EUR).toFixed(2);
+         } 
+         if(inputUah.value === ''){
+            inputForeign.value = '';
+         }
+      }); 
+   }
+        
 }
 
-const currencyCode = {
-   USD: 'USD',
-   EUR: 'EUR',
-   UAH: 'UAH'
-};
 const renderContent = (response) => {
    let currencyInfo = document.querySelector('.currency-info');
    let content = Object.keys(response.data.rates).map(el => {
@@ -46,13 +59,10 @@ const renderContent = (response) => {
    });
 };
 Promise.all([
-      axios.get(`https://api.exchangerate.host/latest?base=${currencyCode.USD}&symbols=${currencyCode.UAH}`),
-      axios.get(`https://api.exchangerate.host/latest?base=${currencyCode.EUR}&symbols=${currencyCode.UAH}`)
+      axios.get('https://api.exchangerate.host/latest?base=USD&symbols=UAH'),
+      axios.get('https://api.exchangerate.host/latest?base=EUR&symbols=UAH')
    ])
    .then(data => data.forEach(renderContent));
-
-
-
 
 
 
