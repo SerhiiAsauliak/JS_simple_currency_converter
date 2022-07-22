@@ -1,0 +1,5 @@
+.jshintrc
+package-lock.json
+package.json
+db.json
+/node_modules

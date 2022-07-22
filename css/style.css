@@ -1,0 +1,46 @@
+* {
+   box-sizing: border-box;
+   font-family: monospace;
+}
+
+.wrapper {
+   width: 400px;
+   margin: 40px auto 0 auto;
+   border: 1px solid rgba(0, 0, 0, .2);
+   padding: 20px;
+}
+
+form {
+   padding: 0 20px;
+   margin: 0 auto;
+   position: relative;
+}
+
+button {
+   margin-top: 20px;
+   background: rgb(225, 204, 48);
+   border: none;
+   border-radius: 10px;
+   width: 100px;
+   height: 25px;
+   font-weight: 700;
+}
+
+[type=checkbox] {
+   margin-top: 20px;
+}
+
+.currency-info {
+   display: flex;
+   align-items: center;
+   font-weight: 700;
+}
+
+.currency-info span {
+   margin: 0 10px;
+}
+
+.currency-info__title {
+   margin-right: 20px;
+}
+
